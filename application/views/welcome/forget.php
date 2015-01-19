@@ -33,18 +33,16 @@
 	<script type="text/javascript">
 		var checkStatus = {
 				email:		false,
-				password:	false,
-				repassword:	false,
-				username:	false,
+				verify:		false,
 		}
 
-		function onSignUp() {
-			$("#submit_btn").html("注册中。。。")
+		function onForget() {
+			$("#submit_btn").html("发送中。。。")
 			$("#submit_btn").addClass("disabled")
 			for (var i in checkStatus) {
 				if (!checkStatus[i]) {
 					$("#" + i).blur()
-					$("#submit_btn").html("注册")
+					$("#submit_btn").html("发送邮件")
 					$("#submit_btn").removeClass("disabled")					
 					return false
 				}
@@ -59,7 +57,7 @@
 				checkStatus.email = false
 				return errorStatus('email', '邮箱地址不能为空')
 			}
-			$.post("<?=site_url('welcome/ajaxValidateEmail')?>", {"email": email}, function(data) {
+			$.post("<?=site_url('welcome/ajaxValidateEmailAndExist')?>", {"email": email}, function(data) {
 				if(!data.status) {
 					checkStatus.email = false
 					errorStatus('email', data.msg)					
@@ -70,49 +68,22 @@
 			}, "json")
 		}
 		
-		function checkPassword() {
-			warningStatus("password", "检测中。。。")
-			var password = $("#password").val()
-			if (password == "") {
-				checkStatus.password = false
-				return errorStatus('password', '密码不能为空')
+		function checkVerify() {
+			warningStatus("verify", "检测中。。。")
+			var verify = $("#verify").val()
+			if (verify == "") {
+				checkStatus.verify = false
+				return errorStatus('verify', '验证码不能为空')
 			}
-			if (!(/^\S{6,32}$/.test(password))) {
-				checkStatus.password = false
-				return errorStatus('password', '密码格式不对')
-			}
-			checkStatus.password = true
-			successStatus('password', "")
-		}
-		
-		function checkRepassword() {
-			warningStatus("repassword", "检测中。。。")
-			var repassword = $("#repassword").val()
-			if (repassword == "") {
-				checkStatus.repassword = false
-				return errorStatus('repassword', '确认密码不能为空')
-			}
-			if ($("#password").val() != repassword) {
-				checkStatus.repassword = false
-				return errorStatus('repassword', '两次密码不一致')
-			}
-			checkStatus.repassword = true
-			successStatus('repassword', "")			
-		}
-
-		function checkUsername() {
-			warningStatus("username", "检测中。。。")
-			var username = $("#username").val()
-			if (username == "") {
-				checkStatus.username = false
-				return errorStatus('username', '用户名不能为空')
-			}
-			if (!(/^[-\w\u4E00-\u9FA5]{2,8}$/.test(username))) {
-				checkStatus.username = false
-				return errorStatus('username', '用户名格式不对')
-			}
-			checkStatus.username = true
-			successStatus('username', "")
+			$.post("<?=site_url('welcome/ajaxCheckVerifyCode')?>", {"verify": verify}, function(data) {
+				if(!data.status) {
+					checkStatus.verify = false
+					errorStatus('verify', '验证码不正确')					
+				} else {
+					checkStatus.verify = true
+					successStatus('verify', "")			
+				}
+			}, "json")
 		}
 		
 		function warningStatus(id, msg) {
@@ -209,16 +180,12 @@
 		
 		window.onload = function() {
 			$("#email").blur(checkEmail)
-			$("#password").blur(checkPassword)
-			$("#repassword").blur(checkRepassword)
-			$("#username").blur(checkUsername)
+			$("#verify").blur(checkVerify)
 
 			$("#email").focus(function() {clearStatus('email');})
-			$("#password").focus(function() {clearStatus('password');})
-			$("#repassword").focus(function() {clearStatus('repassword');})
-			$("#username").focus(function() {clearStatus('username');})
+			$("#verify").focus(function() {clearStatus('verify');})
 		}
-		
+
 	</script>
 	
 	</head>
@@ -230,41 +197,34 @@
 					<a class="navbar-brand" href="javascript:void(0)">网络聊天室</a>
 				</div>
 			</div>
-		</nav>	
+		</nav>
 		<br /><br /><br />
 		<section class="container">
+			<br />
 			<div id="form_panel" class="col-md-offset-8 col-md-4">
 				<br />
-				<h4 class="text-center text-info">极速注册</h4>
+				<h4 class="text-center text-info">忘记密码</h4>
 				<h5 class="text-right"><a href="<?=site_url('welcome/index')?>">&gt;&gt; 返回首页 </a></h5>				
-				<form role="form" action="<?=site_url('welcome/handleSignUp')?>" method="post" onsubmit="return onSignUp()">
+				<form role="form" action="<?=site_url('welcome/handleForget')?>" method="post" onsubmit="return onForget()">
 					<div class="form-group has-feedback">
 						<label for="email">邮箱地址</label>
-						<input type="email" class="form-control" id="email" name="email" placeholder="邮箱地址">
+						<input type="text" class="form-control" id="email" name="email">
 						<span id="email_icon" class="glyphicon form-control-feedback"></span>
 						<span id="email_err" class="help-block"></span>
 					</div>
 					<div class="form-group has-feedback">
-						<label for="password">密码</label>
-						<input type="password" class="form-control" id="password" name="password" placeholder="密码（6~32字符，不含空格）">
-						<span id="password_icon" class="glyphicon form-control-feedback"></span>
-						<span id="password_err" class="help-block"></span>
+						<label for="verify">验证码</label>
+						<input type="text" class="form-control" id="verify" name="verify">
+						<span id="verify_icon" class="glyphicon form-control-feedback"></span>
+						<span id="verify_err" class="help-block"></span>
 					</div>
-					<div class="form-group has-feedback">
-						<label for="repassword">确认密码</label>
-						<input type="password" class="form-control" id="repassword" placeholder="再次输入密码">
-						<span id="repassword_icon" class="glyphicon form-control-feedback"></span>
-						<span id="repassword_err" class="help-block"></span>
-					</div>
-					<div class="form-group has-feedback">
-						<label for="username">用户名</label>
-						<input type="text" class="form-control" id="username" name="username" placeholder="中英文、数字、-、_（2~8字符）">
-						<span id="username_icon" class="glyphicon form-control-feedback"></span>
-						<span id="username_err" class="help-block"></span>
+					<div class="form-group">
+						<img alt="验证码" src="<?=site_url('welcome/getVerifyCode/' . time())?>" width="100px" height="35px" onclick="this.src='<?=site_url('welcome/getVerifyCode')?>?t=' + new Date().getTime()" style="border: 1px solid #aaa; border-radius: 3px; cursor: pointer;" />
+						<small>看不清可以点击图片换一张哦～</small>
 					</div>
 					<hr />
-					<button id="submit_btn" type="submit" class="btn btn-default">注册</button>
-					<br /><br />
+					<button id="submit_btn" type="submit" class="btn btn-block btn-info">发送邮件</button>
+					<br /><br /><br />
 				</form>
 			</div>			
 		</section>

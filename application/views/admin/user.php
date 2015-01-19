@@ -32,21 +32,22 @@
 	<body>
 		<div class="container-fluid">
 		    <table id="dg" title="用户列表" class="easyui-datagrid" style="width:100%; height: 500px;"
-		            url="<?=site_url('user/')?>"
+		            url="<?=site_url('jmjoyadmin/listUser')?>"
 		            toolbar="#toolbar" pagination="true"
-		            rownumbers="true" fitColumns="true" singleSelect="true">
+		            rownumbers="true" fitColumns="true" singleSelect="true"
+		            >
 		        <thead>
 		            <tr>
 		                <th field="username" width="100">用户名</th>
-		                <th field="email" width="100">Last Name</th>
-		                <th field="ctime" width="100">Phone</th>
+		                <th field="email" width="100">邮箱地址</th>
+		                <th field="ctime" width="100">创建时间</th>
 		            </tr>
 		        </thead>
 		    </table>
-		    <div id="toolbar">
-		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">New User</a>
-		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Edit User</a>
-		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">Remove User</a>
+		    <div id="toolbar">		    
+ 		        <a href="javascript:void(0)" disabled class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">New User</a>					 
+		        <a href="javascript:void(0)" disabled class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Edit User</a>
+		        <a href="javascript:void(0)" disabled class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">Remove User</a>
 		    </div>
 		    
 		    <div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"

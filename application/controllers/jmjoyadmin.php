@@ -35,7 +35,25 @@ class JmjoyAdmin extends CI_Controller {
 	}
 	
 	public function listUser() {
+		$page = intval($this->input->post('page'));
+		$rows = intval($this->input->post('rows'));
+		$offset = ($page - 1) * $rows;
 		
+		$sql = 'select count(*) c from lc_user';
+		$row = $this->db->query($sql)->row();
+		$data['total'] = $row->c;
+		
+		$sql = 'select * from lc_user 
+				order by id desc 
+				limit ?, ?';
+		$query = $this->db->query($sql, array($offset, $rows));
+		$resArr = $query->result_array();
+		foreach ($resArr as $key => $row) {
+			$resArr[$key]['ctime'] = date('Y-m-d H:i:s', $row['ctime']);
+		}
+		$data['rows'] = $resArr;
+		
+		echo json_encode($data);
 	}
 	
 	public function room() {

@@ -26,6 +26,16 @@
 	<script src="/public/jquery/jquery-1.11.2.min.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="/public/bootstrap/js/bootstrap.min.js"></script>
+	
+	<script src="/public/jquery/jquery.md5.js"></script>
+	
+	<script type="text/javascript">
+		function onSignIn() {
+			$("input[name=password]").val($.md5($("input[name=password]").val()))
+			return true
+		}
+	</script>
+	
 	</head>
 	
 	<body>
@@ -56,7 +66,7 @@
 						
 							<?php if (!$is_sign_in): ?>
 							
-							<form class="form-signin" role="form" action="<?=site_url('welcome/handleSignIn')?>" method="post">
+							<form class="form-signin" role="form" action="<?=site_url('welcome/handleSignIn')?>" method="post" onsubmit="return onSignIn()">
 								<h4 class="form-signin-heading text-primary text-center">请登陆</h4>
 								<?php if ($msg): ?>
 								<div class="alert alert-danger alert-dismissible" role="alert">
@@ -64,11 +74,17 @@
 									<strong><?=$msg?></strong>
 								</div>
 								<?php endif; ?>
+								<?php if ($succ): ?>
+								<div class="alert alert-success alert-dismissible" role="alert">
+									<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									<strong><?=$succ?></strong>
+								</div>
+								<?php endif; ?>
 								<input name="email" type="email" class="form-control" placeholder="邮箱" value="<?=$email?>" autofocus />
 								<input name="password" type="password" class="form-control" placeholder="密码" />
 								<button class="btn btn-info btn-block" type="submit">登陆</button>
 								<a href="<?=site_url('welcome/signUp')?>" class="btn btn-default btn-block">注册</a>
-								<h6 class="text-right"><a href="#">忘记密码？</a></h6>
+								<h6 class="text-right"><a href="<?=site_url('welcome/forget')?>">忘记密码？</a></h6>
 							</form>
 							
 							<?php else: ?>
@@ -78,7 +94,7 @@
 									<img src="<?=base_url('public/img/avatar.jpg')?>" alt="头像">
 								</a>
 								<div class="media-body">
-									<h4 class="media-heading">Media heading</h4>
+									<h4 class="media-heading"><?=$username?></h4>
 									...
 								</div>
 							</div>	<!-- /media -->

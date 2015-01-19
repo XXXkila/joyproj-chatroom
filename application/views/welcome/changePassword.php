@@ -32,19 +32,17 @@
 	
 	<script type="text/javascript">
 		var checkStatus = {
-				email:		false,
 				password:	false,
 				repassword:	false,
-				username:	false,
 		}
 
 		function onSignUp() {
-			$("#submit_btn").html("注册中。。。")
+			$("#submit_btn").html("修改中。。。")
 			$("#submit_btn").addClass("disabled")
 			for (var i in checkStatus) {
 				if (!checkStatus[i]) {
 					$("#" + i).blur()
-					$("#submit_btn").html("注册")
+					$("#submit_btn").html("修改")
 					$("#submit_btn").removeClass("disabled")					
 					return false
 				}
@@ -235,15 +233,11 @@
 		<section class="container">
 			<div id="form_panel" class="col-md-offset-8 col-md-4">
 				<br />
-				<h4 class="text-center text-info">极速注册</h4>
-				<h5 class="text-right"><a href="<?=site_url('welcome/index')?>">&gt;&gt; 返回首页 </a></h5>				
-				<form role="form" action="<?=site_url('welcome/handleSignUp')?>" method="post" onsubmit="return onSignUp()">
-					<div class="form-group has-feedback">
-						<label for="email">邮箱地址</label>
-						<input type="email" class="form-control" id="email" name="email" placeholder="邮箱地址">
-						<span id="email_icon" class="glyphicon form-control-feedback"></span>
-						<span id="email_err" class="help-block"></span>
-					</div>
+				<h4 class="text-center text-info">修改密码</h4>
+				
+				<?php if ($status): ?>
+				
+				<form role="form" action="<?=site_url('welcome/handleChangePassword')?>" method="post" onsubmit="return onSignUp()">
 					<div class="form-group has-feedback">
 						<label for="password">密码</label>
 						<input type="password" class="form-control" id="password" name="password" placeholder="密码（6~32字符，不含空格）">
@@ -256,17 +250,22 @@
 						<span id="repassword_icon" class="glyphicon form-control-feedback"></span>
 						<span id="repassword_err" class="help-block"></span>
 					</div>
-					<div class="form-group has-feedback">
-						<label for="username">用户名</label>
-						<input type="text" class="form-control" id="username" name="username" placeholder="中英文、数字、-、_（2~8字符）">
-						<span id="username_icon" class="glyphicon form-control-feedback"></span>
-						<span id="username_err" class="help-block"></span>
-					</div>
 					<hr />
-					<button id="submit_btn" type="submit" class="btn btn-default">注册</button>
+					<button id="submit_btn" type="submit" class="btn btn-default">修改</button>
 					<br /><br />
 				</form>
-			</div>			
+				
+				<?php else: ?>
+				
+				<h5 class="text-right"><a href="<?=site_url('welcome/index')?>">&gt;&gt; 返回首页 </a></h5>
+				<hr />		
+				<h4 class="text-center text-primary">激活链接已经过期</h4>
+				<h4 class="text-center text-primary">请重新发送邮件！</h4>
+				<br /><br />
+				
+				<?php endif; ?>
+				
+			</div>
 		</section>
 	</body>
 </html>
