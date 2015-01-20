@@ -42,8 +42,8 @@
 	<script src="/public/bootstrap/js/bootstrap.min.js"></script>
 	
 	<script type="text/javascript">
-		var getUrl = "<?=site_url('room/getMsg')?>"
-		var sendUrl = "<?=site_url('room/sendMsg')?>"
+		var getUrl = "<?=site_url('room/getMsg/' . $cate_id)?>"
+		var sendUrl = "<?=site_url('room/sendMsg/' . $cate_id)?>"
 	
 		window.onload = function() {
 			var bodyHeight = window.screen.availHeight
@@ -52,7 +52,7 @@
 			$("#user_panel").css("height", height)
 			$("#user_list").css("height", height - 45)
 
-			getMsg(0);
+			getMsg(<?=$timestamp?>)
 		};
 
 		function send() {
@@ -60,7 +60,12 @@
 			if (msg == "") {
 				return
 			}
+			if (msg.length > 250) {
+				alert("消息长度过长！（不能超过250个字符哦～）")
+				return
+			}
 			$("#msg_input").val("")
+			$.post(sendUrl, {"content": msg})
 		}
 
 		function onEnter(e) {
@@ -71,7 +76,7 @@
 		}
 
 		function getMsg(timestamp) {
-			$.post(getUrl, {"time": timestamp}, function(data) {
+			$.post(getUrl, {"timestamp": timestamp}, function(data) {
 				display(data.msgs)
 				getMsg(data.timestamp)
 			}, "json")
@@ -80,7 +85,7 @@
 		function display(msgs) {
 			for (var i in msgs) {
 				var msg = msgs[i]
-				var str = "<h5><strong>"+ msg.username +"</strong>&nbsp;&nbsp;&nbsp;<small>" + msg.time + "</small></h5><p>" + msg.content + "</p>"
+				var str = "<h5><strong>"+ msg.username +"</strong>&nbsp;&nbsp;&nbsp;<small>" + msg.ctime + "</small></h5><p>" + msg.content + "</p>"
 			    $('#msg_list').append(str);
 			}
 		    $('#msg_panel').scrollTo('max')
@@ -133,10 +138,10 @@
 		</section>
 		<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
 		<div class="container">
-			<form class="navbar-form" role="search">
+			<div class="navbar-form" role="search">
 				<input id="msg_input" type="text" class="form-control disabled" autofocus onkeypress="onEnter(event)" <?=isset($_SESSION['user']['id'])?'':'disabled'?> >
 				<button id="msg_btn" type="button" class="btn btn-default <?=isset($_SESSION['user']['id'])?'':'disabled'?>" onclick="send()" >发送</button>
-			</form>
+			</div>
 		</div>
 		</nav>
 	</body>

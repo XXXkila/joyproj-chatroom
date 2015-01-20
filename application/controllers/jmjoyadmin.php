@@ -46,6 +46,17 @@ class JmjoyAdmin extends CI_Controller {
 		
 		$sql = 'insert into lc_category (name, parent_id) values(?, ?)';
 		$this->db->query($sql, array($name, $parent_id));
+		$insert_id = $this->db->insert_id();
+		
+		if ($parent_id != 0) {
+			$sql = "create table lc_room_auto_{$insert_id} (
+					id bigint unsigned primary key auto_increment,
+					uid int unsigned not null default 0,
+					content tinytext,
+					ctime int unsigned not null default 0
+			)";
+			$this->db->query($sql);			
+		}
 		
 		redirect('jmjoyadmin/category/' . $id);
 	}
