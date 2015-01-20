@@ -55,7 +55,14 @@ class JmjoyAdmin extends CI_Controller {
 					content tinytext,
 					ctime int unsigned not null default 0
 			)";
-			$this->db->query($sql);			
+			$this->db->query($sql);
+			
+			$sql = "create table lc_room_online_{$insert_id} (
+					uid int unsigned not null default 0,
+					username varchar(8) not null default '',
+					ctime int unsigned not null default 0
+			)";
+			$this->db->query($sql);
 		}
 		
 		redirect('jmjoyadmin/category/' . $id);

@@ -12,12 +12,18 @@ class Room extends CI_Controller {
 		}
 		
 		session_start();
-		if (isset($_SESSION['user']['username'])) {
+		if (isset($_SESSION['user'])) {
+			$data['uid'] = $_SESSION['user']['id'];
 			$data['username'] = $_SESSION['user']['username'];
+			
+			$sql = "insert into lc_room_online_{$cate_id} values (?, ?, ?)";
+			$this->db->query($sql, array($data['uid'], $data['username'], time()));
+			
 		} else {
+			$data['uid'] = 0;
 			$data['username'] = '游客';
 		}
-		
+				
 		$data['cate_id'] = $cate_id;
 		$data['timestamp'] = time() - 5 * 60;
 		$this->load->view('room/index', $data);
@@ -90,6 +96,32 @@ class Room extends CI_Controller {
 		    
 		    break;
 		}
+	}
+	
+	public function getOnlineUser($cate_id = 0) {
+		$cate_id = intval($cate_id);
+		
+		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+		$json = $this->cache->get('room_online_json_' . $cate_id);
+		if ($json) {
+			echo $json;
+			return;
+		}
+		
+		$sql = "delete from lc_room_online_{$cate_id} where ctime < ?";
+		$this->db->query($sql, time() - 15);
+		
+		$sql = "select distinct uid, username from lc_room_online_{$cate_id}";
+		$resArr = $this->db->query($sql)->result_array();
+		
+		$json = json_encode(array(
+			'count'		=>	count($resArr),
+			'users'		=>	$resArr,
+		));
+		
+		$this->cache->save('room_online_json_' . $cate_id, $json, 15);
+		
+		echo $json;
 	}
 	
 	protected function getCategoryName($cate_id) {

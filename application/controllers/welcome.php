@@ -334,7 +334,7 @@ $url
 	
 	protected function getCategory() {
 		
-		$this->load->driver('cache', array('adapter' => 'file', 'backup' => 'apc'));
+		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 		$data = $this->cache->get('category_array');
 		if ($data) {
 			return $data;

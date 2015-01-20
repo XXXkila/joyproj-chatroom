@@ -44,12 +44,6 @@
 				<div class="navbar-header">
 					<a class="navbar-brand" href="javascript:void(0)">网络聊天室</a>
 				</div>
-				
-				<?php if (isset($_SESSION['user'])): ?>
-				<div class="nav navbar-nav navbar-right">
-					<a href="<?=site_url('welcome/handleSignOut')?>" type="button" class="btn btn-default navbar-btn">注销</a>
-				</div>
-				<?php endif; ?>
 			</div>
 		</nav>
 		<br /><br /><br />
@@ -112,7 +106,7 @@
 								</a>
 								<div class="media-body">
 									<h4 class="media-heading"><?=$username?></h4>
-									...
+									<a href="<?=site_url('welcome/handleSignOut')?>" type="button" class="btn btn-xs btn-warning navbar-btn">注销</a>
 								</div>
 							</div>	<!-- /media -->
 							

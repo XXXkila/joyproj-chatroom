@@ -44,6 +44,7 @@
 	<script type="text/javascript">
 		var getUrl = "<?=site_url('room/getMsg/' . $cate_id)?>"
 		var sendUrl = "<?=site_url('room/sendMsg/' . $cate_id)?>"
+		var onlineUserUrl = "<?=site_url('room/getOnlineUser/' . $cate_id)?>"
 	
 		window.onload = function() {
 			var bodyHeight = window.screen.availHeight
@@ -53,6 +54,9 @@
 			$("#user_list").css("height", height - 45)
 
 			getMsg(<?=$timestamp?>)
+
+			getOnlineUser()
+			setInterval(getOnlineUser, 10000)
 		};
 
 		function send() {
@@ -90,6 +94,17 @@
 			}
 		    $('#msg_panel').scrollTo('max')
 		}
+
+		function getOnlineUser() {
+			$.post(onlineUserUrl, function(data) {
+				$("#online_count").html(data.count)
+				var str = ""
+				for (var i in data.users) {
+					str += '<tr><td id="user_table_td"> <span class="glyphicon glyphicon-user"></span> ' + data.users[i].username + '</td></tr>'
+				}
+				$("#online_user_table").html(str)
+			}, 'json')
+		}
 		
 	</script>
 	</head>
@@ -122,14 +137,11 @@
 				<div class="col-md-3">
 					<div id="user_panel" class="panel panel-default">
 						<div class="panel-heading">
-							当前在线：
-							<span class="badge">42</span>
+							当前在线会员：
+							<span id="online_count" class="badge">0</span>
 						</div>
 						<div id="user_list">
-							<table class="table table-condensed">
-								<?php foreach (range(0, 100) as $row): ?>
-								<tr><td id="user_table_td"> <span class="glyphicon glyphicon-user"></span> jmjoy</td></tr>
-								<?php endforeach; ?>
+							<table id="online_user_table" class="table table-condensed">
 							</table>
 						</div>
 					</div>
