@@ -101,6 +101,15 @@ class Room extends CI_Controller {
 	public function getOnlineUser($cate_id = 0) {
 		$cate_id = intval($cate_id);
 		
+		session_start();
+		if (!isset($_SESSION['user'])) {
+			$data['uid'] = $_SESSION['user']['id'];
+			$data['username'] = $_SESSION['user']['username'];
+		
+			$sql = "insert into lc_room_online_{$cate_id} values (?, ?, ?)";
+			$this->db->query($sql, array($data['uid'], $data['username'], time()));
+		}
+		
 		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 		$json = $this->cache->get('room_online_json_' . $cate_id);
 		if ($json) {
