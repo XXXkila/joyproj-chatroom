@@ -93,10 +93,15 @@
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="javascript:void(0)">当前频道：<small>情感 / 男女</small></a>
+					<a class="navbar-brand" href="javascript:void(0)">当前频道：<small><?=$cate_name?></small></a>
 				</div>
+
 				<div class="nav navbar-nav navbar-right">
 					<a class="btn btn-default navbar-btn" href="<?=site_url('welcome/index')?>">退出聊天室</a>
+				</div>
+				
+				<div class="nav navbar-nav navbar-right">
+					<a class="navbar-brand" href="javascript:void(0)"><small>身份： <?=$username?></small></a>
 				</div>
 			</div>
 		</nav>
@@ -129,8 +134,8 @@
 		<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
 		<div class="container">
 			<form class="navbar-form" role="search">
-				<input id="msg_input" type="text" class="form-control" autofocus onkeypress="onEnter(event)" />
-				<button id="msg_btn" type="button" class="btn btn-default" onclick="send()">发送</button>
+				<input id="msg_input" type="text" class="form-control disabled" autofocus onkeypress="onEnter(event)" <?=isset($_SESSION['user']['id'])?'':'disabled'?> >
+				<button id="msg_btn" type="button" class="btn btn-default <?=isset($_SESSION['user']['id'])?'':'disabled'?>" onclick="send()" >发送</button>
 			</form>
 		</div>
 		</nav>

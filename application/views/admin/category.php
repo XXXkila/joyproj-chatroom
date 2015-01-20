@@ -22,7 +22,57 @@
 	<script src="/public/bootstrap/js/bootstrap.min.js"></script>
 	</head>
 	
-	<body>
-
+	<body class="container-fluid">
+		<br />
+		<div class="row">
+		
+			<div class="col-xs-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">一级分类</div>
+					<!-- List group -->
+					<div class="list-group">
+						<?php foreach ($top as $row): ?>
+						<a href="<?=site_url('jmjoyadmin/category/'.$row->id)?>" class="list-group-item <?=$row->id==$id?'active':''?>"><?=$row->name?></a>
+						<?php endforeach; ?>
+						<a href="javascript:void(0)" class="list-group-item">
+							<form class="form-inline" role="form" action="<?=site_url('jmjoyadmin/handleAddCategory/'.$id)?>" method="post">
+								<div class="form-group">
+									<input type="text" class="form-control" name="name" />
+									<input type="hidden" name="parent_id" value="0" />
+								</div>
+								<button type="submit" class="btn btn-default">添加分类</button>
+							</form>
+						</a>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-xs-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">二级分类</div>
+					<!-- List group -->
+					<div class="list-group">
+					
+						<?php if (isset($sub)): ?>
+					
+						<?php foreach ($sub as $row): ?>
+						<a href="javascript:void(0)" class="list-group-item"><?=$row->name?></a>
+						<?php endforeach; ?>
+						<a href="javascript:void(0)" class="list-group-item">
+							<form class="form-inline" role="form" action="<?=site_url('jmjoyadmin/handleAddCategory/'.$id)?>" method="post">
+								<div class="form-group">
+									<input type="text" class="form-control" name="name" />
+									<input type="hidden" name="parent_id" value="<?=$id?>" />
+								</div>
+								<button type="submit" class="btn btn-default">添加分类</button>
+							</form>
+						</a>
+						<?php endif; ?>
+						
+					</div>
+				</div>
+			</div>		
+			
+		</div>
 	</body>
 </html>

@@ -44,6 +44,12 @@
 				<div class="navbar-header">
 					<a class="navbar-brand" href="javascript:void(0)">网络聊天室</a>
 				</div>
+				
+				<?php if (isset($_SESSION['user'])): ?>
+				<div class="nav navbar-nav navbar-right">
+					<a href="<?=site_url('welcome/handleSignOut')?>" type="button" class="btn btn-default navbar-btn">注销</a>
+				</div>
+				<?php endif; ?>
 			</div>
 		</nav>
 		<br /><br /><br />
@@ -53,10 +59,21 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">请选择频道：</div>
 				  		<div class="panel-body">
-				  			<h4>情感频道：</h4>
-				  			<p><a href="<?=site_url('room/index')?>">男女</a> | <a href="#">男女</a></p>
-				  			<h4>情感频道：</h4>
-				  			<p><a href="#">男女</a> | <a href="#">男女</a></p>
+				  			<?php foreach ($topCate as $ko => $vo): ?>
+				  			
+				  				<h4><?=$vo->name?>：</h4>
+				  				
+				  				<?php if (isset($subCate[$ko])): ?>
+				  				
+				  				<?php foreach ($subCate[$ko] as $vi ): ?>
+				  				
+				  				&nbsp; <a href="<?=site_url('room/index/'.$vi->id . '/' . time())?>"><?=$vi->name?></a> &nbsp; 
+				  				
+				  				<?php endforeach; ?>
+				  				
+				  				<?php endif; ?>
+				  				
+				  			<?php endforeach; ?>
 						</div>
 					</div>
 				</div>

@@ -14,6 +14,9 @@ class Welcome extends CI_Controller {
 		} else {
 			$data['username'] = $_SESSION['user']['username'];
 		}
+		
+		list($data['topCate'], $data['subCate']) = $this->getCategory();
+		
 		$this->load->view('welcome/index', $data);
 	}
 	
@@ -100,6 +103,12 @@ class Welcome extends CI_Controller {
 		session_start();
 		$_SESSION['user']['id'] = $row->id;
 		$_SESSION['user']['username'] = $row->username;
+		return redirect('welcome/index');
+	}
+	
+	public function handleSignOut() {
+		session_start();
+		unset($_SESSION['user']);
 		return redirect('welcome/index');
 	}
 	
@@ -321,6 +330,36 @@ $url
 			return false;
 		}
 		return true;
+	}
+	
+	protected function getCategory() {
+		
+		$this->load->driver('cache', array('adapter' => 'file', 'backup' => 'apc'));
+		$data = $this->cache->get('category_array');
+		if ($data) {
+			return $data;
+		}
+
+		$sql = 'select * from lc_category';
+		$result = $this->db->query($sql)->result();
+
+		$top = array();
+		$sub = array();
+		foreach ($result as $row) {
+			if ($row->parent_id == 0) {
+				$top[$row->id] = $row;
+			} else {
+				$sub[$row->parent_id][] = $row;
+			}
+		}
+		
+		$data = array($top, $sub);
+		$this->cache->save('category_array', $data);
+		return $data;
+	}
+	
+	public function test() {
+		$this->getCategory();
 	}
 	
 }

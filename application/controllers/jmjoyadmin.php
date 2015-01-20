@@ -24,10 +24,31 @@ class JmjoyAdmin extends CI_Controller {
 		$this->load->view('admin/home');
 	}
 	
-	public function category() {
+	public function category($id = 0) {
 		$this->forbiddenIfNotSignIn();
-		$this->load->view('admin/category');
+		
+		$data['top'] = $this->getCategoryByParentId(0);
+		
+		if ($id) {
+			$data['sub'] = $this->getCategoryByParentId(intval($id));
+		}
+		
+		$data['id'] = $id;
+		
+		$this->load->view('admin/category', $data);
 	}	
+	
+	public function handleAddCategory($id = 0) {
+		$this->forbiddenIfNotSignIn();
+		
+		$name = $this->input->post('name');
+		$parent_id = intval($this->input->post('parent_id'));
+		
+		$sql = 'insert into lc_category (name, parent_id) values(?, ?)';
+		$this->db->query($sql, array($name, $parent_id));
+		
+		redirect('jmjoyadmin/category/' . $id);
+	}
 	
 	public function user() {
 		$this->forbiddenIfNotSignIn();
@@ -120,6 +141,12 @@ class JmjoyAdmin extends CI_Controller {
 			redirect('jmjoyadmin/index');
 			die();
 		}
+	}
+	
+	protected function getCategoryByParentId($parent_id) {
+		$sql = "select * from lc_category where parent_id = ?";
+		$query = $this->db->query($sql, $parent_id);
+		return $query->result();
 	}
 	
 }
